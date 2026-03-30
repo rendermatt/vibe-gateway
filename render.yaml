@@ -1,0 +1,17 @@
+# Exported from Render on 2024-04-02T19:09:42Z
+services:
+- type: web
+  name: vibe-gateway
+  runtime: docker
+  healthCheckPath: /caddyhealth
+  region: oregon
+  envVars:
+  - key: DOWNSTREAM_PORT
+    value: 10000
+  - key: PORT
+    value: 10000
+  - key: GATEWAY_USER
+    sync: false
+  - key: GATEWAY_PASSWORD
+    sync: false
+version: "1"
