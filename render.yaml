@@ -12,6 +12,6 @@ services:
     value: 10000
   - key: GATEWAY_USER
     sync: false
-  - key: GATEWAY_PASSWORD
+  - key: GATEWAY_PASSWORD_HASH
     sync: false
 version: "1"
