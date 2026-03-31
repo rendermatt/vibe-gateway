@@ -3,6 +3,10 @@
       respond "OK" 200
     }
 
+    handle / {
+      respond "OK" 200
+    }
+
     handle {
         basicauth {
             {$GATEWAY_USER} {$GATEWAY_PASSWORD_HASH}
