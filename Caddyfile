@@ -1,12 +1,18 @@
 :{$PORT} {
-    basicauth {
-        {$GATEWAY_USER} {$GATEWAY_PASSWORD_HASH}
+    handle /caddyhealth {
+      respond "OK" 200
     }
 
-    @route path_regexp route ^/([^/]+)(/.*)?$
+    handle {
+        basicauth {
+            {$GATEWAY_USER} {$GATEWAY_PASSWORD_HASH}
+        }
 
-    handle @route {
-        rewrite * {re.route.2}
-        reverse_proxy {re.route.1}:{$DOWNSTREAM_PORT}
+        @route path_regexp route ^/([^/]+)(/.*)?$
+
+        handle @route {
+            rewrite * {re.route.2}
+            reverse_proxy {re.route.1}:{$DOWNSTREAM_PORT}
+        }
     }
 }
