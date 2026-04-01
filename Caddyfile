@@ -1,0 +1,64 @@
+{
+    order authenticate before respond
+    order authorize before basicauth
+
+    servers {
+        trusted_proxies static 0.0.0.0/0
+    }
+
+    security {
+        oauth identity provider auth0 {
+            realm auth0
+            driver generic
+            client_id {$AUTH0_CLIENT_ID}
+            client_secret {$AUTH0_CLIENT_SECRET}
+            metadata_url https://{$AUTH0_DOMAIN}/.well-known/openid-configuration
+            scopes openid email profile
+        }
+
+        authentication portal myportal {
+            crypto default token lifetime 3600
+            crypto key sign-verify {$AUTH0_JWT_SECRET}
+            enable identity provider auth0
+            cookie insecure on
+            cookie samesite lax
+            trust login redirect uri domain suffix onrender.com path prefix /
+            transform user {
+                match realm auth0
+                action add role authp/user
+            }
+        }
+
+        authorization policy mypolicy {
+            set auth url /auth/oauth2/auth0
+            crypto key verify {$AUTH0_JWT_SECRET}
+            allow roles authp/user authp/admin
+        }
+    }
+}
+
+:{$PORT} {
+    handle /caddyhealth {
+        respond "OK" 200
+    }
+
+
+    handle /auth* {
+        authenticate with myportal
+    }
+
+    handle {
+        authorize with mypolicy
+
+        handle / {
+            respond "OK" 200
+        }
+
+        @route path_regexp route ^/([^/]+)(/.*)?$
+
+        handle @route {
+            rewrite * {re.route.2}
+            reverse_proxy {re.route.1}:{$DOWNSTREAM_PORT}
+        }
+    }
+}

@@ -1,0 +1,21 @@
+# Exported from Render on 2024-04-02T19:09:42Z
+services:
+- type: web
+  name: vibe-gateway
+  runtime: docker
+  healthCheckPath: /caddyhealth
+  region: oregon
+  envVars:
+  - key: DOWNSTREAM_PORT
+    value: 10000
+  - key: PORT
+    value: 10000
+  - key: AUTH0_CLIENT_ID
+    sync: false
+  - key: AUTH0_CLIENT_SECRET
+    sync: false
+  - key: AUTH0_DOMAIN
+    sync: false
+  - key: AUTH0_JWT_SECRET
+    sync: false
+version: "1"
