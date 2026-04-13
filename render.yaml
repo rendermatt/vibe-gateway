@@ -15,7 +15,7 @@ services:
   - key: GATEWAY_PASSWORD_HASH
     sync: false
   ipAllowList: &ip-allow-list
-  - source: 203.0.113.0/24
+  - source: 207.183.181.253/24
     description: "office network"
 - type: web
   name: vibe-gateway-oidc
