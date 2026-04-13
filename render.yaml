@@ -1,8 +1,4 @@
 # Exported from Render on 2024-04-02T19:09:42Z
-x-ip-allow-list: &ip-allow-list
-- source: 203.0.113.0/24
-  description: "office network"
-
 services:
 - type: web
   name: vibe-gateway
@@ -18,7 +14,9 @@ services:
     sync: false
   - key: GATEWAY_PASSWORD_HASH
     sync: false
-  ipAllowList: *ip-allow-list
+  ipAllowList: &ip-allow-list
+  - source: 203.0.113.0/24
+    description: "office network"
 - type: web
   name: vibe-gateway-oidc
   branch: oidc
