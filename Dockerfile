@@ -13,8 +13,7 @@ RUN apt-get -qq update \
   && rm -rf /var/lib/apt/lists/*
 RUN TS_FILE=tailscale_${TAILSCALE_VERSION}_amd64.tgz \
   && wget -q "https://pkgs.tailscale.com/stable/${TS_FILE}" \
-  && tar xzf "${TS_FILE}" --strip-components=1 \
-  && cp tailscale tailscaled /render/
+  && tar xzf "${TS_FILE}" --strip-components=1
 
 FROM caddy:latest
 COPY --from=caddy-builder /usr/bin/caddy /usr/bin/caddy
