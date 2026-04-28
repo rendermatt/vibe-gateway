@@ -3,7 +3,6 @@ services:
 - type: pserv
   name: vibe-gateway
   runtime: docker
-  healthCheckPath: /caddyhealth
   region: oregon
   envVars:
   - key: DOWNSTREAM_PORT
