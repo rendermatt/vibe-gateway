@@ -1,6 +1,6 @@
 # Exported from Render on 2024-04-02T19:09:42Z
 services:
-- type: web
+- type: pserv
   name: vibe-gateway
   runtime: docker
   healthCheckPath: /caddyhealth
@@ -17,5 +17,7 @@ services:
   - key: AUTH0_DOMAIN
     sync: false
   - key: AUTH0_JWT_SECRET
+    sync: false
+  - key: TAILSCALE_AUTHKEY
     sync: false
 version: "1"
