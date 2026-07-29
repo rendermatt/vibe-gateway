@@ -10,10 +10,17 @@ services:
     value: 10000
   - key: PORT
     value: 10000
-  - key: GATEWAY_USER
-    sync: false
-  - key: GATEWAY_PASSWORD_HASH
-    sync: false
+  # Internal hostname of userdb-admin. Inbound IP rules do not apply to
+  # private-network traffic, so its ipAllowList does not block this.
+  - key: AUTH_UPSTREAM
+    value: userdb-admin:10000
+  # Shared secret proving a /auth call came from this gateway. Generated once on
+  # userdb-admin and read back here so the two always match.
+  - key: GATEWAY_TOKEN
+    fromService:
+      name: userdb-admin
+      type: web
+      envVarKey: GATEWAY_TOKEN
   ipAllowList: &ip-allow-list
   - source: 207.183.181.253
     description: "office network"
@@ -37,4 +44,42 @@ services:
   - key: AUTH0_JWT_SECRET
     sync: false
   ipAllowList: *ip-allow-list
+- type: web
+  name: userdb-admin
+  runtime: go
+  region: oregon
+  # rootDir keeps this service from rebuilding on Caddyfile-only commits.
+  rootDir: ./userdb-admin
+  buildCommand: go build -o userdb-admin .
+  startCommand: ./userdb-admin
+  healthCheckPath: /healthz
+  envVars:
+  - key: PORT
+    value: 10000
+  - key: DATABASE_URL
+    fromDatabase:
+      name: vibe-gateway-users
+      property: connectionString
+  # Render generates this once; vibe-gateway reads it back via fromService.
+  - key: GATEWAY_TOKEN
+    generateValue: true
+  - key: ADMIN_USER
+    sync: false
+  - key: ADMIN_PASSWORD_HASH
+    sync: false
+  - key: BCRYPT_COST
+    value: 12
+  # How long a verified gateway credential is cached in memory. Without this,
+  # every proxied request pays a bcrypt verify plus a database round trip.
+  - key: CRED_CACHE_TTL_SECONDS
+    value: 300
+  # Defence in depth for the admin UI. Does not affect /auth, which arrives over
+  # the private network and is gated by GATEWAY_TOKEN instead.
+  ipAllowList: *ip-allow-list
+databases:
+- name: vibe-gateway-users
+  plan: basic-256mb
+  databaseName: gateway
+  user: gateway
+  region: oregon
 version: "1"

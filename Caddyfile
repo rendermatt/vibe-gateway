@@ -4,8 +4,17 @@
     }
 
     handle {
-        basicauth {
-            {$GATEWAY_USER} {$GATEWAY_PASSWORD_HASH}
+        # Delegates every credential check to userdb-admin, which verifies against
+        # Postgres. A 2xx lets the request through; anything else (including the
+        # 401 + WWW-Authenticate challenge) is returned to the client verbatim.
+        #
+        # The shared token proves the request came from this gateway. userdb-admin
+        # is a public service, so without it anyone could brute-force gateway
+        # credentials against /auth directly and bypass the ipAllowList.
+        forward_auth {$AUTH_UPSTREAM} {
+            uri /auth
+            copy_headers X-Auth-User
+            header_up X-Gateway-Token {$GATEWAY_TOKEN}
         }
 
         handle / {

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>gateway users</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, sans-serif;
+         max-width: 820px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.25rem; margin-bottom: .25rem; }
+  .sub { color: #777; font-size: .85rem; margin-bottom: 1.5rem; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+  th, td { text-align: left; padding: .5rem .4rem; border-bottom: 1px solid #8883; }
+  th { font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; color: #777; }
+  button { font: inherit; padding: .3rem .7rem; cursor: pointer; border-radius: 4px;
+           border: 1px solid #8886; background: transparent; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  button.danger { color: #c0392b; border-color: #c0392b66; }
+  input { font: inherit; padding: .35rem .5rem; border: 1px solid #8886; border-radius: 4px; }
+  fieldset { border: 1px solid #8884; border-radius: 6px; padding: 1rem; }
+  legend { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: #777; }
+  #banner { padding: .6rem .8rem; border-radius: 5px; margin: 1rem 0; display: none;
+            overflow-wrap: anywhere; }
+  #banner.ok { background: #2ecc7122; border: 1px solid #2ecc7166; }
+  #banner.err { background: #e74c3c22; border: 1px solid #e74c3c66; }
+  #banner.warn { background: #f39c1222; border: 1px solid #f39c1266; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85em; }
+  .row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+</style>
+</head>
+<body>
+  <h1>gateway users</h1>
+  <div class="sub">
+    Accounts that can authenticate to the gateway. Changes take effect on the next
+    request &mdash; no redeploy.
+  </div>
+
+  <div id="banner"></div>
+
+  <table>
+    <thead><tr><th>username</th><th style="width:7rem">added</th><th style="width:15rem">actions</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <fieldset>
+    <legend>add user</legend>
+    <div class="row">
+      <input id="newUser" placeholder="username" autocomplete="off" spellcheck="false" size="18">
+      <input id="newPass" placeholder="password" autocomplete="off" spellcheck="false" size="28">
+      <button id="gen" type="button">generate</button>
+      <button id="add" type="button">add user</button>
+    </div>
+    <p class="sub" style="margin:.75rem 0 0">
+      Allowed: 1&ndash;64 chars from <code>A&ndash;Z a&ndash;z 0&ndash;9 . _ @ + -</code>, starting and
+      ending with a letter or digit. Copy the password now &mdash; it is hashed immediately and
+      cannot be recovered.
+    </p>
+  </fieldset>
+
+  <p class="row" style="margin-top:1.5rem">
+    <button id="refresh" type="button">refresh</button>
+  </p>
+
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+# local test state and secrets -- never commit
+local-userdb.txt
+*.backup
+.env
